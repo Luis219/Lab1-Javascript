@@ -117,6 +117,8 @@ function createPlayer(width, height, x){
 
 }
 
+
+
 function updateCanvas(){
     /**
      * Funcion que actualiza el jugador, lo vuelve a dibujar y lo hace caer
