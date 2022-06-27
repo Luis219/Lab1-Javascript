@@ -22,6 +22,13 @@ var isJumping=false;
 var jumpSpeed=0;
 
 //variable de bloque
+var block;
+
+//puntaje que inicia en cero
+var score=0;
+
+//variable que guarda el puntaje
+var scoreLabel;
 
 
 
@@ -33,8 +40,10 @@ function startGame(){
 
     //se crea un nuevo jugador
     player= new createPlayer(20,20,8);
-    //se asignar le valor del nuevo bloque
+    //se asigna el valor del nuevo bloque
     block= new createBlock();
+    //se asigna el puntaje de la funcion que crea un puntaje
+    scoreLabel = new createScoreLabel(8, 15);
 
 }
 
@@ -111,23 +120,105 @@ function createPlayer(width, height, x){
             jumpSpeed+=0.1;
         }
     }
+}
+
+function createBlock(){
+    /**
+     * función que permite crear el bloque
+     */
+    var width= random(5,30);
+    var height=random(5,120);
+    var speed=random(1,4);
+
+    this.x=canvasWidth;
+    this.y=canvasHeight-height;
+
+    this.draw= function(){
+        /**
+        * Funcion que dibuja el bloque
+        */
+       ctx=gameCanvas.context;
+       ctx.fillStyle="white";
+       ctx.fillRect(this.x, this.y, width, height);
+   }
+
+   this.attackPlayer=function(){
+        /**
+        * Funcion de ataque de jugador
+        */
+        this.x-=speed;
+        this.returnToAttackPosition();
+   }
+   this.returnToAttackPosition=function(){
+        /**
+        * Funcion de retorna a la posición de ataque
+        */
+        if(this.x<0){
+            width= random(5,30);
+            height=random(5,120);
+            speed=random(1,4);
+            this.x=canvasWidth;
+            this.y=canvasHeight-height;
+
+        }
+   }
+}
+
+function detectCollision(){
+
+    /**
+     * Función que detecta si hay una colisón con el bloque
+     */
+    var playerLeft = player.x;
+    var playerRight = player.x + player.width;
+    var blockLeft = block.x;
+    var blockRight = block.x + block.width;
+
+    var playerBottom = player.y + player.height;
+    var blockTop = block.y;
+    //si se cumple las condicines el juego se detiene
+    if(playerRight> blockLeft && playerLeft<blockLeft && playerBottom>blockTop){
+        gameCanvas.stop();
 
 
-
+    }
 
 }
 
-
+function createScoreLabel(){
+    /**
+     * Función que crea el puntaje
+     */
+    this.score = 0;
+    this.x = x;
+    this.y = y;
+    this.draw = function(){
+        /**
+         * función que dibuja el puntaje
+         */
+        ctx = gameCanvas.context;
+        ctx.font = "15px Marker Felt";
+        ctx.fillStyle = "black";
+        ctx.fillText(this.text, this.x,this.y);
+    }
+}
 
 function updateCanvas(){
     /**
      * Funcion que actualiza el jugador, lo vuelve a dibujar y lo hace caer
      */
+    
+    //Verifica si hay una colisión
+    detectCollision();
+    
     ctx= gameCanvas.context;
     ctx.clearRect(0,0, canvasWidth, canvasHeight);
     player.makeFall();
     player.draw();
     player.jump();
+
+    block.draw();
+    block.attackPlayer();
 }
 
 function resetJump(){
@@ -137,6 +228,13 @@ function resetJump(){
     jumpSpeed=0;
     isJumping=false;
 
+}
+
+function  randomNumber(){
+    /**
+     * funcion que genera un numero al azar
+     */
+    return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 document.body.onkeyup=function(e){
