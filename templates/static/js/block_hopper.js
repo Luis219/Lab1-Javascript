@@ -15,6 +15,15 @@ var fallSpeed=0;
 //intervalo del canvas
 var interval = setInterval(updateCanvas, 15);
 
+//variable booleana para conocer si el jugador esta saltando o no
+var isJumping=false;
+
+//velocidad de salto inicial
+var jumpSpeed=0;
+
+//variable de bloque
+
+
 
 function startGame(){
     /**
@@ -24,6 +33,8 @@ function startGame(){
 
     //se crea un nuevo jugador
     player= new createPlayer(20,20,8);
+    //se asignar le valor del nuevo bloque
+    block= new createBlock();
 
 }
 
@@ -70,9 +81,38 @@ function createPlayer(width, height, x){
         /**
          * Funcion que permite dar movimiento al jugador
          */
+        if(!isJumping){
         this.y+=fallSpeed;
         fallSpeed+=0.1;
+
+        //llamada a la funcion de parar
+        this.stopPlayer();
+        }
+        
     }
+
+    this.stopPlayer= function(){
+        /**
+         * Funcion que permite parar o detener el jugador
+         */
+        var ground=canvasHeight-this.height;
+        if(this.y>ground){
+            this.y=ground;
+
+        }
+    }
+
+    this.jump=function(){
+        /**
+         * Funcion que permite saltar con velocidad 0.1
+         */
+        if (isJumping){
+            this.y-= jumpSpeed;
+            jumpSpeed+=0.1;
+        }
+    }
+
+
 
 
 }
@@ -85,4 +125,24 @@ function updateCanvas(){
     ctx.clearRect(0,0, canvasWidth, canvasHeight);
     player.makeFall();
     player.draw();
+    player.jump();
+}
+
+function resetJump(){
+    /**
+     * Funcion que coloca la velocidad de salto en cero, indica que el jugador no está saltando
+     */
+    jumpSpeed=0;
+    isJumping=false;
+
+}
+
+document.body.onkeyup=function(e){
+    //funcion que asigna la tecla de espacio con la funcion de salto
+    if(e.keyCode==32){
+        isJumping=true;
+        setTimeout(function(){
+            resetJump();
+        },1000)
+    }
 }
