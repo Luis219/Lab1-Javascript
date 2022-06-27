@@ -1,5 +1,5 @@
 //anchura de canvas
-var canvasWidth=580;
+var canvasWidth=700;
 //altura de canvas
 var canvasHeight=470;
 
@@ -45,6 +45,7 @@ function startGame(){
     //se asigna el puntaje de la funcion que crea un puntaje
     scoreLabel = new createScoreLabel(8, 15);
 
+
 }
 
 var gameCanvas={
@@ -68,7 +69,6 @@ function createPlayer(width, height, x){
    * @param {int} width anchura
    * @param {int} height altura
    * @param {int} x posicion c
-   * @returns Devuelve un nuevo jugador
    */
     this.width=width;
     this.height=height;
@@ -82,7 +82,7 @@ function createPlayer(width, height, x){
          * Funcion que crea dibuja el jugador
          */
         ctx=gameCanvas.context;
-        ctx.fillStyle="white";
+        ctx.fillStyle="yellow";
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
@@ -91,11 +91,11 @@ function createPlayer(width, height, x){
          * Funcion que permite dar movimiento al jugador
          */
         if(!isJumping){
-        this.y+=fallSpeed;
-        fallSpeed+=0.1;
+            this.y+=fallSpeed;
+            fallSpeed+=0.2;
 
-        //llamada a la funcion de parar
-        this.stopPlayer();
+            //llamada a la funcion de parar
+            this.stopPlayer();
         }
         
     }
@@ -117,7 +117,7 @@ function createPlayer(width, height, x){
          */
         if (isJumping){
             this.y-= jumpSpeed;
-            jumpSpeed+=0.1;
+            jumpSpeed+=0.2;
         }
     }
 }
@@ -126,9 +126,9 @@ function createBlock(){
     /**
      * función que permite crear el bloque
      */
-    var width= random(5,30);
-    var height=random(5,120);
-    var speed=random(1,4);
+    var width= randomNumber(5,30);
+    var height=randomNumber(5,120);
+    var speed=randomNumber(1,4);
 
     this.x=canvasWidth;
     this.y=canvasHeight-height;
@@ -154,11 +154,13 @@ function createBlock(){
         * Funcion de retorna a la posición de ataque
         */
         if(this.x<0){
-            width= random(5,30);
-            height=random(5,120);
-            speed=random(1,4);
+            width= randomNumber(5,30);
+            height=randomNumber(5,120);
+            speed=randomNumber(1,4);
             this.x=canvasWidth;
             this.y=canvasHeight-height;
+            //el puntaje aumenta
+            score++;
 
         }
    }
@@ -185,7 +187,7 @@ function detectCollision(){
 
 }
 
-function createScoreLabel(){
+function createScoreLabel(x,y){
     /**
      * Función que crea el puntaje
      */
@@ -197,8 +199,8 @@ function createScoreLabel(){
          * función que dibuja el puntaje
          */
         ctx = gameCanvas.context;
-        ctx.font = "15px Marker Felt";
-        ctx.fillStyle = "black";
+        ctx.font = "20px Times New Roman";
+        ctx.fillStyle = "white";
         ctx.fillText(this.text, this.x,this.y);
     }
 }
@@ -219,6 +221,9 @@ function updateCanvas(){
 
     block.draw();
     block.attackPlayer();
+
+    scoreLabel.text= "Puntaje: "+score;
+    scoreLabel.draw();
 }
 
 function resetJump(){
@@ -230,7 +235,7 @@ function resetJump(){
 
 }
 
-function  randomNumber(){
+function  randomNumber(max, min){
     /**
      * funcion que genera un numero al azar
      */
