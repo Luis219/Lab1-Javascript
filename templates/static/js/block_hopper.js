@@ -113,7 +113,7 @@ function createPlayer(width, height, x){
 
     this.jump=function(){
         /**
-         * Funcion que permite saltar con velocidad 0.1
+         * Funcion que permite saltar con velocidad 0.2
          */
         if (isJumping){
             this.y-= jumpSpeed;
@@ -126,6 +126,8 @@ function createBlock(){
     /**
      * función que permite crear el bloque
      */
+
+    //asignación de ancho, alto y velocidad mediante función randomNumber()
     var width= randomNumber(5,30);
     var height=randomNumber(5,120);
     var speed=randomNumber(1,4);
@@ -190,6 +192,8 @@ function detectCollision(){
 function createScoreLabel(x,y){
     /**
      * Función que crea el puntaje
+     * @param {int} x posicion x
+     * @param {int} y posicion y
      */
     this.score = 0;
     this.x = x;
@@ -215,14 +219,20 @@ function updateCanvas(){
     
     ctx= gameCanvas.context;
     ctx.clearRect(0,0, canvasWidth, canvasHeight);
+    //llamada del jugador a la función makeFall()
     player.makeFall();
+    //llamada del jugador a la función draw()
     player.draw();
+    //llamada del jugador a la función jump()
     player.jump();
-
+    
+    //llamada del bloque a la función dra()
     block.draw();
+    //llamada del bloque a la función attackPlayer()
     block.attackPlayer();
-
+    //asignación de puntaje
     scoreLabel.text= "Puntaje: "+score;
+    //llamada del puntaje a la función draw()
     scoreLabel.draw();
 }
 
@@ -242,9 +252,9 @@ function  randomNumber(max, min){
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 
-document.body.onkeyup=function(e){
+document.body.onkeyup=function(evento){
     //funcion que asigna la tecla de espacio con la funcion de salto
-    if(e.keyCode==32){
+    if(evento.keyCode==32){
         isJumping=true;
         setTimeout(function(){
             resetJump();

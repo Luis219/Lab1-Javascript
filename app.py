@@ -1,12 +1,9 @@
 import glob
 import io
 import os
-import uuid
 #importación de librerías
-import numpy as np
 from flask import Flask, jsonify, make_response, render_template, request
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
+
 
 #instancia de la aplicación
 app = Flask(__name__)
